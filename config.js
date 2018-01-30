@@ -22,7 +22,8 @@ var parserOpts = {
     ],
     noteKeywords: ['BREAKING CHANGE', 'BREAKING CHANGES'],
     revertPattern: /^revert:\s([\s\S]*?)\s*This reverts commit (\w*)\./,
-    revertCorrespondence: ['header', 'hash']
+    revertCorrespondence: ['header', 'hash'],
+    issuePrefixes:['MINGLE-','#']
   };
   
   function issueUrl() {
@@ -88,16 +89,16 @@ var parserOpts = {
         commit.subject = commit.subject.replace(/@([a-zA-Z0-9_]+)/g, '[@$1](https://github.com/$1)');
         commit.subject = commit.subject;
       }
-  
+
       // remove references that already appear in the subject
       commit.references = commit.references.filter(function(reference) {
         if (issues.indexOf(reference.issue) === -1) {
           return true;
         }
-  
+
         return false;
       });
-  
+
       return commit;
     },
     groupBy: 'type',
