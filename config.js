@@ -23,7 +23,7 @@ var parserOpts = {
     noteKeywords: ['BREAKING CHANGE', 'BREAKING CHANGES'],
     revertPattern: /^revert:\s([\s\S]*?)\s*This reverts commit (\w*)\./,
     revertCorrespondence: ['header', 'hash'],
-    issuePrefixes:['MINGLE-','#']
+    issuePrefixes:['MINGLE-','#','JIRA-']
   };
   
   function issueUrl() {
@@ -90,6 +90,10 @@ var parserOpts = {
         commit.subject = commit.subject;
       }
 
+      console.log(commit.references);
+
+      
+
       // remove references that already appear in the subject
       commit.references = commit.references.filter(function(reference) {
         if (issues.indexOf(reference.issue) === -1) {
@@ -97,6 +101,13 @@ var parserOpts = {
         }
 
         return false;
+      }).map(function(reference){
+        if(reference.prefix=='MINGLE-'){
+          reference.url='https://eiwork.mingle.thoughtworks.com/projects/media_solutions/cards/'+reference.issue
+        }else if(reference.prefix=='#'){
+          reference.url='https://jira.sea.corp.expecn.com/jira/browse/'+reference.issue;
+        }
+        return reference;
       });
 
       return commit;
