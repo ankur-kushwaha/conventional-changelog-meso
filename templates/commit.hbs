@@ -31,8 +31,11 @@
     {{~#if this.owner}}
       {{~this.owner}}/
     {{~/if}}
-    {{~this.repository}}#{{this.issue}}](
-    {{~#if @root.repository}}
+    {{~this.repository}}{{~this.prefix}}{{this.issue}}](
+    {{~#if this.url}}
+      {{~this.url}}
+    {{~else}}
+      {{~#if @root.repository}}
       {{~#if @root.host}}
         {{~@root.host}}/
       {{~/if}}
@@ -50,12 +53,14 @@
     {{~else}}
       {{~@root.repoUrl}}
     {{~/if}}/
-    {{~@root.issue}}/{{this.issue}})
+    {{~@root.issue}}/{{this.issue}}
+    {{~/if}}
+    )
   {{~else}}
     {{~#if this.owner}}
       {{~this.owner}}/
     {{~/if}}
-    {{~this.repository}}#{{this.issue}}
+    {{~this.repository}}{{~this.prefix}}{{this.issue}}
   {{~/if}}{{/each}}
 {{~/if}}
 

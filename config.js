@@ -22,7 +22,8 @@ var parserOpts = {
     ],
     noteKeywords: ['BREAKING CHANGE', 'BREAKING CHANGES'],
     revertPattern: /^revert:\s([\s\S]*?)\s*This reverts commit (\w*)\./,
-    revertCorrespondence: ['header', 'hash']
+    revertCorrespondence: ['header', 'hash'],
+    issuePrefixes:['MINGLE-','#','JIRA-']
   };
   
   function issueUrl() {
@@ -45,7 +46,7 @@ var parserOpts = {
         discard = false;
       });
   
-      if (commit.type === 'feat') {
+      if (commit.type === 'feat'||commit.type === 'feature') {
         commit.type = 'Features';
       } else if (commit.type === 'fix') {
         commit.type = 'Bug Fixes';
@@ -88,16 +89,27 @@ var parserOpts = {
         commit.subject = commit.subject.replace(/@([a-zA-Z0-9_]+)/g, '[@$1](https://github.com/$1)');
         commit.subject = commit.subject;
       }
-  
+
+      console.log(commit.references);
+
+      
+
       // remove references that already appear in the subject
       commit.references = commit.references.filter(function(reference) {
         if (issues.indexOf(reference.issue) === -1) {
           return true;
         }
-  
+
         return false;
+      }).map(function(reference){
+        if(reference.prefix=='MINGLE-'){
+          reference.url='https://eiwork.mingle.thoughtworks.com/projects/media_solutions/cards/'+reference.issue
+        }else if(reference.prefix=='#'){
+          reference.url='https://jira.sea.corp.expecn.com/jira/browse/'+reference.issue;
+        }
+        return reference;
       });
-  
+
       return commit;
     },
     groupBy: 'type',
