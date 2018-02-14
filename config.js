@@ -90,10 +90,6 @@ var parserOpts = {
         commit.subject = commit.subject;
       }
 
-      console.log(commit.references);
-
-      
-
       // remove references that already appear in the subject
       commit.references = commit.references.filter(function(reference) {
         if (issues.indexOf(reference.issue) === -1) {
